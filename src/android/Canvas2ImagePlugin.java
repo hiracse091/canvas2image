@@ -39,6 +39,8 @@ public class Canvas2ImagePlugin extends CordovaPlugin {
 
 			String base64 = data.optString(0);
 			String photoName =  data.optString(1);
+			boolean iconImage = data.optBoolean(2);
+			Log.i("Canvas2ImagePlugin","iconImage-----"+iconImage);
 			if (base64.equals("")) // isEmpty() requires API level 9
 				callbackContext.error("Missing base64 string");
 			
@@ -51,7 +53,7 @@ public class Canvas2ImagePlugin extends CordovaPlugin {
 			} else {
 				
 				// Save the image
-				File imageFile = savePhoto(bmp,photoName);
+				File imageFile = savePhoto(bmp,photoName,iconImage);
 				if (imageFile == null)
 					callbackContext.error("Error while saving image");
 				
@@ -67,7 +69,7 @@ public class Canvas2ImagePlugin extends CordovaPlugin {
 		}
 	}
 
-	private File savePhoto(Bitmap bmp,String name) {
+	private File savePhoto(Bitmap bmp,String name, boolean icon_image) {
 		File retVal = null;
 		
 		try {
@@ -84,7 +86,17 @@ public class Canvas2ImagePlugin extends CordovaPlugin {
 			int check = deviceVersion.compareTo("2.3.3");
 
 			File folder;
-			String DEFAULT_PATH = "Android/data/ChampionTeam";
+			File childFolder;
+			String DEFAULT_PATH = "";
+			String ICON_PATH = "Android/data/ChampionTeam/TeamIcons";
+			if(!icon_image){
+				Log.i("Canvas2ImagePlugin","JerseyIMage-----");
+				DEFAULT_PATH = "Android/data/ChampionTeam";
+			}else{
+				Log.i("Canvas2ImagePlugin","IconImage-----");
+				DEFAULT_PATH = "Android/data/ChampionTeam/TeamIcons";	
+			}		
+			
 			/*
 			 * File path = Environment.getExternalStoragePublicDirectory(
 			 * Environment.DIRECTORY_PICTURES ); //this throws error in Android
@@ -92,15 +104,18 @@ public class Canvas2ImagePlugin extends CordovaPlugin {
 			 */
 			if (check >= 1) {
 				folder = new File(Environment.getExternalStorageDirectory(),DEFAULT_PATH);
-				
+				//childFolder = new File(Environment.getExternalStorageDirectory(),ICON_PATH);
 				if(!folder.exists()) {
 					folder.mkdirs();
+					//childFolder.mkdirs();
 				}
 			} else {
 				folder = Environment.getExternalStorageDirectory();
+				childFolder = Environment.getExternalStorageDirectory();
 			}
 			
 			File imageFile = new File(folder, name + ".png");
+			
 
 			FileOutputStream out = new FileOutputStream(imageFile);
 			bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
