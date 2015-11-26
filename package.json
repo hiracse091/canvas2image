@@ -1,5 +1,5 @@
 {
-  "name": "cordova-plugin-canvas2image-custom-custom",
+  "name": "cordova-plugin-canvas2image-custom",
   "version": "0.7.0",
   "description": "This plugin allows you to save the contents of an HTML canvas tag to the iOS Photo Library, or Android Gallery from your app.",
   "cordova": {
